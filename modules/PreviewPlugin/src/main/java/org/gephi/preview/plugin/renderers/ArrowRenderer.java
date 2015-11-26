@@ -67,6 +67,7 @@ import org.w3c.dom.Element;
 @ServiceProvider(service = Renderer.class, position = 200)
 public class ArrowRenderer implements Renderer {
 
+    public static final String ID = "Arrow";
     //Const
     protected final float BASE_RATIO = 0.5f;
     //Default values
@@ -206,5 +207,10 @@ public class ArrowRenderer implements Renderer {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(ArrowRenderer.class, "ArrowRenderer.name");
+    }
+
+    @Override
+    public String getRendererId() {
+        return ID;
     }
 }

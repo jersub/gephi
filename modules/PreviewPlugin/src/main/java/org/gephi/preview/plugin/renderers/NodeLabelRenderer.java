@@ -73,8 +73,9 @@ import org.w3c.dom.svg.SVGRect;
  */
 @ServiceProvider(service = Renderer.class, position = 400)
 public class NodeLabelRenderer implements Renderer {
-    //Custom properties
 
+    public static final String ID = "NodeLabel";
+    //Custom properties
     public static final String NODE_COLOR = "node.label.nodeColor";
     public static final String NODE_SIZE = "node.label.nodeSize";
     public static final String NODE_X = "node.x";
@@ -421,5 +422,10 @@ public class NodeLabelRenderer implements Renderer {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.name");
+    }
+
+    @Override
+    public String getRendererId() {
+        return ID;
     }
 }

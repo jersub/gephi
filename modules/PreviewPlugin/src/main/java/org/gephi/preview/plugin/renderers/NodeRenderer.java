@@ -65,6 +65,7 @@ import org.w3c.dom.Element;
 @ServiceProvider(service = Renderer.class, position = 300)
 public class NodeRenderer implements Renderer {
 
+    public static final String ID = "Node";
     //Default values
     protected float defaultBorderWidth = 1f;
     protected DependantColor defaultBorderColor = new DependantColor(Color.BLACK);
@@ -210,5 +211,10 @@ public class NodeRenderer implements Renderer {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.name");
+    }
+
+    @Override
+    public String getRendererId() {
+        return ID;
     }
 }

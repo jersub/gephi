@@ -71,8 +71,9 @@ import org.w3c.dom.Text;
  */
 @ServiceProvider(service = Renderer.class, position = 500)
 public class EdgeLabelRenderer implements Renderer {
-    //Custom properties
 
+    public static final String ID = "EdgeLabel";
+    //Custom properties
     public static final String EDGE_COLOR = "edge.label.edgeColor";
     public static final String LABEL_X = "edge.label.x";
     public static final String LABEL_Y = "edge.label.y";
@@ -381,5 +382,10 @@ public class EdgeLabelRenderer implements Renderer {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.name");
+    }
+
+    @Override
+    public String getRendererId() {
+        return ID;
     }
 }

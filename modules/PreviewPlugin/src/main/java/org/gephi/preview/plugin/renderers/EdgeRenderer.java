@@ -71,6 +71,7 @@ import org.w3c.dom.Element;
 @ServiceProvider(service = Renderer.class, position = 100)
 public class EdgeRenderer implements Renderer {
 
+    public static final String ID = "Edge";
     //Custom properties
     public static final String EDGE_MIN_WEIGHT = "edge.min-weight";
     public static final String EDGE_MAX_WEIGHT = "edge.max-weight";
@@ -448,5 +449,10 @@ public class EdgeRenderer implements Renderer {
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.name");
+    }
+
+    @Override
+    public String getRendererId() {
+        return ID;
     }
 }

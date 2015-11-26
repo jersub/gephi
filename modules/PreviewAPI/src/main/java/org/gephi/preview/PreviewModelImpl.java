@@ -120,23 +120,20 @@ public class PreviewModelImpl implements PreviewModel {
     }
 
     /**
-     * Makes sure that, if more than one plugin extends a default renderer, only the one with the lowest position is enabled initially.
+     * Makes sure that, if more than one plugin extends a default renderer,
+     * only the one with the lowest position is enabled initially.
      */
     private void initManagedRenderers() {
-        Renderer[] registeredRenderers = previewController.getRegisteredRenderers();
+        final Renderer[] registeredRenderers = previewController.getRegisteredRenderers();
 
-        Set<String> replacedRenderers = new HashSet<String>();
+        final Set<String> registeredIds = new HashSet<String>();
 
         managedRenderers = new ManagedRenderer[registeredRenderers.length];
         for (int i = 0; i < registeredRenderers.length; i++) {
-            Renderer r = registeredRenderers[i];
-            Class superClass = r.getClass().getSuperclass();
-            if (superClass != null && superClass.getName().startsWith("org.gephi.preview.plugin.renderers.")) {
-                managedRenderers[i] = new ManagedRenderer(r, !replacedRenderers.contains(superClass.getName()));
-                replacedRenderers.add(superClass.getName());
-            } else {
-                managedRenderers[i] = new ManagedRenderer(r, true);
-            }
+            final Renderer r = registeredRenderers[i];
+            final String rendererId = r.getRendererId();
+            managedRenderers[i] = new ManagedRenderer(r, !registeredIds.contains(rendererId));
+            registeredIds.add(rendererId);
         }
     }
 
@@ -438,7 +435,7 @@ public class PreviewModelImpl implements PreviewModel {
         if (managedRenderers != null) {
             for (ManagedRenderer managedRenderer : managedRenderers) {
                 writer.writeStartElement("managedrenderer");
-                writer.writeAttribute("class", managedRenderer.getRenderer().getClass().getName());
+                writer.writeAttribute("rendererId", managedRenderer.getRenderer().getRendererId());
                 writer.writeAttribute("enabled", String.valueOf(managedRenderer.isEnabled()));
                 writer.writeEndElement();
             }
@@ -455,14 +452,10 @@ public class PreviewModelImpl implements PreviewModel {
         boolean isSimpleValue = false;
         String simpleValueClass = null;
 
-        List<ManagedRenderer> managedRenderersList = new ArrayList<ManagedRenderer>();
-        Map<String, Renderer> availableRenderers = new HashMap<String, Renderer>();
-        for (Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
-            availableRenderers.put(renderer.getClass().getName(), renderer);
-            Class superClass = renderer.getClass().getSuperclass();
-            if (superClass != null && superClass.getName().startsWith("org.gephi.preview.plugin.renderers.")) {
-                availableRenderers.put(superClass.getName(), renderer);//For plugins replacing a default renderer
-            }
+        final List<ManagedRenderer> managedRenderersList = new ArrayList<ManagedRenderer>();
+        final Map<String, Renderer> availableRenderers = new HashMap<String, Renderer>();
+        for (final Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
+            availableRenderers.put(renderer.getRendererId(), renderer);
         }
 
         boolean end = false;
@@ -480,9 +473,9 @@ public class PreviewModelImpl implements PreviewModel {
                         simpleValueClass = reader.getAttributeValue(null, "class");
                         isSimpleValue = true;
                     } else if ("managedrenderer".equalsIgnoreCase(name)) {
-                        String rendererClass = reader.getAttributeValue(null, "class");
-                        if (availableRenderers.containsKey(rendererClass)) {
-                            managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererClass), Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
+                        final String rendererId = reader.getAttributeValue(null, "rendererId");
+                        if (availableRenderers.containsKey(rendererId)) {
+                            managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererId), Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
                         }
                     }
                     break;
